@@ -1,12 +1,13 @@
 #include "functions.h"
+#include "structs.h"
 
-void	delay_ms(uint32_t ms)
+void	delay_us(uint32_t us)
 {
-	Systick->LOAD = 72000 - 1;
+	Systick->LOAD = 72 - 1;
 	Systick->VAL = 0;
 
 	Systick->CTRL = (1 << 0) | (1 << 2); //0. bitte acip kapatma, 2 de ise islemci hizi secilir
-	for (uint32_t i = 0; i < ms; i++)
+	for (uint32_t i = 0; i < us; i++)
 		while ((Systick->CTRL & (1 << 16)) == 0); //16. bit sayacin 0 a gelip gelmedigini verir.
 	Systick->CTRL = 0;
 }
@@ -37,11 +38,20 @@ int	main(void)
 
 	CNFGR_LED_PIN(GPIOC, 13);
 
+	int	brightness = 11;
+	int	step = 10;
 	while (1)
 	{
 		PIN_RESET(GPIOC, 13);
-		delay_ms(6000);
+		delay_us(brightness);
 		PIN_SET(GPIOC, 13);
-		delay_ms(6000);
+		delay_us(1000 - brightness);
+		static int	counter = 0;
+		if (++counter > 10)
+		{
+			brightness += step;
+			if(brightness <= 10 || brightness >= 990) step = -step;
+			counter = 0;
+		}
 	}
 }

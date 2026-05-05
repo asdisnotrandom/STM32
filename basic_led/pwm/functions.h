@@ -12,8 +12,8 @@
 											_Static_assert((PIN) >= 0 && (PIN) <= 15, "HATA: Pin numarasi 0 ile 15 arasinda olmali!");  \
 											if ((PIN) < 8) \
 											{ \
-												PORT->CRL &= ~(0xF << ((PIN) * 4)); \
-												PORT->CRL |= (0x2 << ((PIN) * 4));  \
+												PORT->CRL &= ~(0xF << ((PIN & 0x7) * 4)); \
+												PORT->CRL |= (0x2 << ((PIN & 0x7) * 4));  \
 											}  \
 											else if ((PIN) >= 8 && (PIN) < 16)  \
 											{  \
